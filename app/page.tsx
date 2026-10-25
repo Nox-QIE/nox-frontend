@@ -102,7 +102,15 @@ export default function Home() {
       )}
 
       <footer>
-        {t.network}: {networkName}. {t.footer}
+        <p>
+          {t.network}: {networkName}. {t.footer}
+        </p>
+        <p style={{ marginTop: "0.6rem" }}>
+          <Link href="/privacy/">{t.privacyLink}</Link>
+          <Link href="/terms/" style={{ marginLeft: "1.25rem" }}>
+            {t.termsLink}
+          </Link>
+        </p>
       </footer>
     </main>
   );

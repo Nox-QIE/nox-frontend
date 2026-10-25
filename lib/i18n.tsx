@@ -58,6 +58,8 @@ const en = {
   network: "Network",
   explorer: "View on explorer",
   footer: "Nox is open source. Game rules, contracts and this page can be audited on GitHub.",
+  privacyLink: "Privacy",
+  termsLink: "Terms",
 };
 
 const id: typeof en = {
@@ -115,6 +117,8 @@ const id: typeof en = {
   network: "Jaringan",
   explorer: "Lihat di explorer",
   footer: "Nox open source. Aturan game, kontrak, dan halaman ini bisa diaudit di GitHub.",
+  privacyLink: "Privasi",
+  termsLink: "Syarat layanan",
 };
 
 export const dict = { en, id };
