@@ -127,7 +127,7 @@ export function GameView() {
             {ev.finalize.roles.map((r) => (
               <li key={r.player}>
                 <span className="grow mono">
-                  {explorerUrl ? <a href={`${explorerUrl}/address/${r.player}`}>{short(r.player)}</a> : short(r.player)}
+                  <Link href={`/player/?a=${r.player}`}>{short(r.player)}</Link>
                 </span>
                 <span className={ROLE_BY_CODE[r.role] === "werewolf" ? "tag-wolves" : undefined}>{roleName(r.player)}</span>
               </li>

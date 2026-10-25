@@ -75,6 +75,16 @@ const en = {
   tableSigners: "Players",
   tableTxs: "Transactions",
   metricsSource: (net: string) => `Source: NoxGame and NoxCredits events on ${net}.`,
+  playerTitle: "Player",
+  playerBad: "That is not a wallet address.",
+  playerEmpty: "This wallet has not joined any Nox game on this network yet.",
+  pGames: "Games joined",
+  pWins: "Wins / finished",
+  pActions: "Votes and night actions signed",
+  pRoles: "Roles played",
+  pHistory: "Games",
+  pResult: { won: "Won", lost: "Lost", cancelled: "Cancelled", running: "In progress" } as Record<"won" | "lost" | "cancelled" | "running", string>,
+  pNote: "Wins are worked out from the role revealed on-chain and the recorded winner of each game.",
 };
 
 const id: typeof en = {
@@ -149,6 +159,16 @@ const id: typeof en = {
   tableSigners: "Pemain",
   tableTxs: "Transaksi",
   metricsSource: (net) => `Sumber: event NoxGame dan NoxCredits di ${net}.`,
+  playerTitle: "Pemain",
+  playerBad: "Itu bukan alamat wallet.",
+  playerEmpty: "Wallet ini belum pernah ikut game Nox di jaringan ini.",
+  pGames: "Game diikuti",
+  pWins: "Menang / selesai",
+  pActions: "Vote & aksi malam ditandatangani",
+  pRoles: "Peran yang pernah dimainkan",
+  pHistory: "Game",
+  pResult: { won: "Menang", lost: "Kalah", cancelled: "Dibatalkan", running: "Berjalan" },
+  pNote: "Kemenangan dihitung dari peran yang dibuka di blockchain dan pemenang tercatat tiap game.",
 };
 
 export const dict = { en, id };
