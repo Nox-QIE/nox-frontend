@@ -10,6 +10,7 @@ Public proof dashboard for [Nox](https://github.com/Nox-QIE): anyone can check t
   5. replaying the night actions and votes with the open-source rules (`@nox/shared/engine`) gives the recorded winner.
 - **Check my role**: paste the code the bot sent by DM to confirm the role you were dealt is the role that was revealed.
 - **Home**: recent games and a leaderboard from `CreditsMinted` events.
+- **Metrics** (`/metrics`): unique player wallets, transactions signed by players, verified games, credits, and players signing per day (30 days), counted from chain events in the browser.
 - Indonesian and English. Mobile first. Static export: no server, the browser talks to the QIE RPC directly (it allows CORS). Logs are read in 10,000-block windows (the QIE RPC limit).
 
 ## Run

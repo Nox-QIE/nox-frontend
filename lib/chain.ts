@@ -11,6 +11,7 @@ import {
 } from "viem";
 import { NoxCreditsAbi, NoxGameAbi } from "./abi";
 import { config } from "./config";
+import type { ChainActivity } from "./metrics";
 import type { GameEvidence } from "./verify";
 
 /** QIE caps eth_getLogs at 10,000 blocks per call. */
@@ -129,4 +130,31 @@ export async function leaderboard(limit = 20): Promise<LeaderRow[]> {
     rows.set(key, r);
   }
   return [...rows.values()].sort((a, b) => (b.credits > a.credits ? 1 : b.credits < a.credits ? -1 : b.games - a.games)).slice(0, limit);
+}
+
+/** Every player-signed action and game outcome, for the public metrics page. */
+export async function loadActivity(): Promise<{ activity: ChainActivity; timeOf: (b: bigint) => number }> {
+  const [gameLogs, creditLogs] = await Promise.all([
+    logsInWindows(config.gameAddress, []).then((l) => parseEventLogs({ abi: NoxGameAbi, logs: l })),
+    logsInWindows(config.creditsAddress, []).then((l) => parseEventLogs({ abi: NoxCreditsAbi, eventName: "CreditsMinted", logs: l })),
+  ]);
+  const activity: ChainActivity = { signed: [], finalized: 0, cancelled: 0, credits: 0n };
+  for (const l of gameLogs) {
+    if (l.eventName === "PlayerJoined") activity.signed.push({ player: l.args.player, block: l.blockNumber });
+    else if (l.eventName === "VoteCast") activity.signed.push({ player: l.args.voter, block: l.blockNumber });
+    else if (l.eventName === "NightActionCommitted") activity.signed.push({ player: l.args.player, block: l.blockNumber });
+    else if (l.eventName === "GameFinalized") activity.finalized += 1;
+    else if (l.eventName === "GameCancelled") activity.cancelled += 1;
+  }
+  for (const l of creditLogs) if (l.eventName === "CreditsMinted") activity.credits += l.args.amount;
+
+  // Block timestamps, a few requests at a time.
+  const blocks = [...new Set(activity.signed.map((s) => s.block))];
+  const times = new Map<bigint, number>();
+  for (let i = 0; i < blocks.length; i += 8) {
+    await Promise.all(
+      blocks.slice(i, i + 8).map(async (b) => times.set(b, Number((await chain().getBlock({ blockNumber: b })).timestamp) * 1000)),
+    );
+  }
+  return { activity, timeOf: (b) => times.get(b) ?? 0 };
 }
