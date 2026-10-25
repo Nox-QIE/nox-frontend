@@ -1,6 +1,7 @@
 import {
   createPublicClient,
   decodeFunctionData,
+  fallback,
   http,
   parseEventLogs,
   type Address,
@@ -17,7 +18,8 @@ const WINDOW = 9_999n;
 
 let client: PublicClient | null = null;
 export function chain(): PublicClient {
-  client ??= createPublicClient({ transport: http(config.rpcUrl) }) as PublicClient;
+  const transports = config.rpcUrls.map((u) => http(u, { timeout: 10_000 }));
+  client ??= createPublicClient({ transport: transports.length === 1 ? transports[0]! : fallback(transports) }) as PublicClient;
   return client;
 }
 

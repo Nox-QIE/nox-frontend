@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import type { ReactNode } from "react";
+import { RegisterSW } from "@/components/RegisterSW";
 import { LangProvider } from "@/lib/i18n";
 import "./globals.css";
 
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="id" className={`${bricolage.variable} ${mono.variable}`}>
       <body>
         <LangProvider>{children}</LangProvider>
+        <RegisterSW />
       </body>
     </html>
   );
