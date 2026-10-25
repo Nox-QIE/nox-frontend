@@ -316,3 +316,50 @@ footer {
     animation: none !important;
   }
 }
+
+/* ---------- metrics */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.5rem 1rem;
+  margin: 2rem 0 0;
+}
+
+/* Labels may wrap to two lines; keep the numbers on one baseline. */
+.kpis > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kpis dt {
+  color: var(--fog);
+  font-size: 0.92rem;
+}
+
+.kpis dd {
+  margin: 0.15rem 0 0;
+  font-size: 2.4rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.92rem;
+}
+
+table.data th,
+table.data td {
+  text-align: left;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--night-line);
+}
+
+table.data th {
+  color: var(--fog);
+  font-weight: 500;
+}

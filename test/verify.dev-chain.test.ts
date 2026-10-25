@@ -80,3 +80,16 @@ describe.skipIf(!up)("verification against the dev chain", () => {
     expect(rows.at(-1)!.credits).toBe(10n);
   });
 });
+
+describe.skipIf(!up)("metrics against the dev chain", () => {
+  it("counts the 12 demo players and their signed transactions", async () => {
+    const { loadActivity } = await import("../lib/chain");
+    const { summarize } = await import("../lib/metrics");
+    const { activity, timeOf } = await loadActivity();
+    const m = summarize(activity, timeOf);
+    expect(m.uniquePlayers).toBe(12);
+    expect(m.gamesFinalized).toBe(2);
+    expect(m.playerTxs).toBeGreaterThan(12); // joins plus night commits and votes
+    expect(m.daily.at(-1)!.signers).toBe(12); // all played today
+  });
+});

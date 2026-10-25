@@ -60,6 +60,21 @@ const en = {
   footer: "Nox is open source. Game rules, contracts and this page can be audited on GitHub.",
   privacyLink: "Privacy",
   termsLink: "Terms",
+  metricsNav: "Metrics",
+  metricsTitle: "Real players, on-chain",
+  metricsLead: "Every Nox player signs their own transactions on QIE: joining a game, sealing a night action, voting. These numbers are counted straight from the chain in your browser, so anyone can check them.",
+  kPlayers: "Unique player wallets",
+  kTxs: "Transactions signed by players",
+  kGames: "Games verified and finished",
+  kCredits: "Nox Credits earned",
+  dailyTitle: "Players signing each day",
+  dailyNote: "Distinct player wallets that signed at least one game transaction that day, last 30 days (UTC).",
+  dailyLabel: (day: string, signers: number, txs: number) => `${day}: ${signers} ${signers === 1 ? "player" : "players"}, ${txs} ${txs === 1 ? "transaction" : "transactions"}`,
+  showTable: "Show as a table",
+  tableDay: "Day",
+  tableSigners: "Players",
+  tableTxs: "Transactions",
+  metricsSource: (net: string) => `Source: NoxGame and NoxCredits events on ${net}.`,
 };
 
 const id: typeof en = {
@@ -119,6 +134,21 @@ const id: typeof en = {
   footer: "Nox open source. Aturan game, kontrak, dan halaman ini bisa diaudit di GitHub.",
   privacyLink: "Privasi",
   termsLink: "Syarat layanan",
+  metricsNav: "Metrik",
+  metricsTitle: "Pemain nyata, tercatat on-chain",
+  metricsLead: "Setiap pemain Nox menandatangani transaksinya sendiri di QIE: bergabung ke game, menyegel aksi malam, dan memberi suara. Angka ini dihitung langsung dari blockchain di browsermu, jadi siapa pun bisa memeriksanya.",
+  kPlayers: "Wallet pemain unik",
+  kTxs: "Transaksi yang ditandatangani pemain",
+  kGames: "Game selesai & terverifikasi",
+  kCredits: "Nox Credits yang didapat",
+  dailyTitle: "Pemain yang bertransaksi per hari",
+  dailyNote: "Jumlah wallet pemain berbeda yang menandatangani minimal satu transaksi game pada hari itu, 30 hari terakhir (UTC).",
+  dailyLabel: (day, signers, txs) => `${day}: ${signers} pemain, ${txs} transaksi`,
+  showTable: "Tampilkan sebagai tabel",
+  tableDay: "Hari",
+  tableSigners: "Pemain",
+  tableTxs: "Transaksi",
+  metricsSource: (net) => `Sumber: event NoxGame dan NoxCredits di ${net}.`,
 };
 
 export const dict = { en, id };
