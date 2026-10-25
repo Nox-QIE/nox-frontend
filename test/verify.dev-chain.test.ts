@@ -93,3 +93,17 @@ describe.skipIf(!up)("metrics against the dev chain", () => {
     expect(m.daily.at(-1)!.signers).toBe(12); // all played today
   });
 });
+
+describe.skipIf(!up)("player profile against the dev chain", () => {
+  it("matches the leaderboard and the game results", async () => {
+    const chain = await import("../lib/chain");
+    const { buildProfile } = await import("../lib/profile");
+    const top = (await chain.leaderboard())[0]!; // 30 credits = one game, won
+    const p = buildProfile(top.player, await chain.loadPlayer(top.player));
+    expect(p.games).toBe(1);
+    expect(p.wins).toBe(1);
+    expect(p.credits).toBe(top.credits);
+    expect(p.votes + p.nightActions).toBeGreaterThan(0);
+    expect(p.history[0]!.role).not.toBeNull();
+  });
+});

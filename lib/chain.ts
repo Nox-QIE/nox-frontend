@@ -1,5 +1,6 @@
 import {
   createPublicClient,
+  pad,
   decodeFunctionData,
   fallback,
   http,
@@ -12,6 +13,7 @@ import {
 import { NoxCreditsAbi, NoxGameAbi } from "./abi";
 import { config } from "./config";
 import type { ChainActivity } from "./metrics";
+import type { PlayerEvents } from "./profile";
 import type { GameEvidence } from "./verify";
 
 /** QIE caps eth_getLogs at 10,000 blocks per call. */
@@ -24,7 +26,7 @@ export function chain(): PublicClient {
   return client;
 }
 
-async function logsInWindows(address: Address, topics: (Hex | null)[], fromBlock = config.fromBlock): Promise<Log[]> {
+async function logsInWindows(address: Address, topics: (Hex | Hex[] | null)[], fromBlock = config.fromBlock): Promise<Log[]> {
   const latest = await chain().getBlockNumber();
   const out: Log[] = [];
   for (let from = fromBlock; from <= latest; from += WINDOW + 1n) {
@@ -157,4 +159,37 @@ export async function loadActivity(): Promise<{ activity: ChainActivity; timeOf:
     );
   }
   return { activity, timeOf: (b) => times.get(b) ?? 0 };
+}
+
+/** Every NoxGame / NoxCredits event about one player, using indexed topics (no full scan). */
+export async function loadPlayer(player: Address): Promise<PlayerEvents> {
+  const topic = pad(player.toLowerCase() as Hex, { size: 32 });
+  const [asTopic2, asTopic3, minted] = await Promise.all([
+    // PlayerJoined(gameId, player), RoleRevealed(gameId, player, role)
+    logsInWindows(config.gameAddress, [null, null, topic]).then((l) => parseEventLogs({ abi: NoxGameAbi, logs: l })),
+    // NightActionCommitted(gameId, round, player), VoteCast(gameId, round, voter)
+    logsInWindows(config.gameAddress, [null, null, null, topic]).then((l) => parseEventLogs({ abi: NoxGameAbi, logs: l })),
+    // CreditsMinted(to, amount, gameId)
+    logsInWindows(config.creditsAddress, [null, topic]).then((l) => parseEventLogs({ abi: NoxCreditsAbi, logs: l })),
+  ]);
+  const e: PlayerEvents = { joined: [], revealed: [], votes: 0, nightActions: 0, credits: 0n, outcomes: new Map() };
+  for (const l of asTopic2) {
+    if (l.eventName === "PlayerJoined") e.joined.push({ gameId: l.args.gameId, block: l.blockNumber });
+    else if (l.eventName === "RoleRevealed") e.revealed.push({ gameId: l.args.gameId, role: l.args.role });
+  }
+  for (const l of asTopic3) {
+    if (l.eventName === "VoteCast") e.votes += 1;
+    else if (l.eventName === "NightActionCommitted") e.nightActions += 1;
+  }
+  for (const l of minted) if (l.eventName === "CreditsMinted") e.credits += l.args.amount;
+  if (e.joined.length) {
+    // Outcomes of just these games: topic1 accepts a list of game ids (OR).
+    const ids = e.joined.map((j) => j.gameId);
+    const ends = parseEventLogs({ abi: NoxGameAbi, logs: await logsInWindows(config.gameAddress, [null, ids]) });
+    for (const l of ends) {
+      if (l.eventName === "GameFinalized") e.outcomes.set(l.args.gameId.toLowerCase(), l.args.winner);
+      else if (l.eventName === "GameCancelled") e.outcomes.set(l.args.gameId.toLowerCase(), "cancelled");
+    }
+  }
+  return e;
 }

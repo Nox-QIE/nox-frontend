@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { Bar } from "@/components/Bar";
 import { leaderboard, recentGames, type GameSummary, type LeaderRow } from "@/lib/chain";
-import { explorerUrl, networkName } from "@/lib/config";
+import { networkName } from "@/lib/config";
 import { short, useI18n } from "@/lib/i18n";
 
 export default function Home() {
@@ -90,7 +90,7 @@ export default function Home() {
             <li key={r.player}>
               <span className="rank">{i + 1}</span>
               <span className="grow mono">
-                {explorerUrl ? <a href={`${explorerUrl}/address/${r.player}`}>{short(r.player)}</a> : short(r.player)}
+                <Link href={`/player/?a=${r.player}`}>{short(r.player)}</Link>
               </span>
               <span className="muted num">{t.games(r.games)}</span>
               <span className="num">
