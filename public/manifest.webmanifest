@@ -1,0 +1,10 @@
+{
+  "name": "Nox",
+  "short_name": "Nox",
+  "description": "Fair play proofs for Nox Werewolf games on QIE",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#161b33",
+  "theme_color": "#161b33",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
